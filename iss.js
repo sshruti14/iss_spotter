@@ -54,4 +54,26 @@ const fetchCoordsByIP = function (ip, callback) {
   });
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIP };
+const fetchISSFlyOverTimes = function (coords, callback) {
+  const url = `http://api.open-notify.org/iss-pass.json?lat=${coords[0]}&lon=${coords[1]}`;
+
+  request(url, (error, response, body) => {
+    if (error) {
+      callback(error, null);
+    }
+
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching Iss Times. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+    const raisetimes = JSON.parse(body).response;
+    if (response.statusCode === 200) {
+      callback(null, raisetimes);
+      return;
+    }
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
